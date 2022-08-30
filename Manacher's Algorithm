@@ -1,0 +1,54 @@
+Algorithm for finding largest substring which is a palindrome.
+Suppose we are at ith position thus this algorithm will show the longest substring which is palindrome such that middle character index of substring is i.
+
+struct manacher {
+    string s;
+    int n;
+    vector<int> radius;
+    manacher(string s)
+    {
+        this->s = s;
+        n = this->s.size();
+    }
+    vector<int> find_radius_fori() {
+        int n = s.size();
+        string extended(2 * n + 1, '0');
+        for (int i = 0; i < n; i++)
+            extended[2 * i + 1] = s[i];
+        n = 2 * n + 1;
+        radius.assign(n, 0);
+        int loc = 0;
+        for (int i = 1; i < n; i++) {
+            if (i <= loc + radius[loc])
+                radius[i] = min(radius[loc - (i - loc)], loc + radius[loc] - i);
+
+            while (i - radius[i] > 0 && i + radius[i] < n - 1 && extended[i - radius[i] - 1] == extended[i + radius[i] + 1])
+                radius[i]++;
+            if (i + radius[i] > loc + radius[loc])
+                loc = i;
+        }
+        // return array of size 2*n+1 and radius[i] states the size of palindrome from i as center.
+        return radius;
+    }
+    int getmax()
+    {
+        find_radius_fori();
+        int mx = 0;
+        for (int i = 0; i < radius.size(); i++)
+            mx = max(mx, radius[i]);
+        // return longest palindromic substring of string s
+        return mx;
+    }
+};
+
+int main()
+{
+    string s;
+    int n;
+    // to find longest palindromic substring
+    cout << manacher.getmax();
+
+    // to find vector of size 2*n + 1 having longest palindromic substring having center index i.
+    vector<int> arr = manacher.find_substring_size_for_i();
+
+}
