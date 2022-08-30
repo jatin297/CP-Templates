@@ -1,0 +1,35 @@
+// Template for disjoint set union with path compression for finding parent and union by rank for efficient merging.
+
+struct dsu {
+    vector<int> parent, rank;
+    dsu(int n) {
+        for (int i = 0; i <= n; i++)
+        {
+            parent.push_back(i);
+            rank.push_back(0);
+        }
+    }
+    int get(int n) {
+        if (parent[n] == n) return n;
+        return parent[n] = get(parent[n]);
+    }
+    void union_(int a, int b) {
+        int x = get(a);
+        int y = get(b);
+        if(x == y) return;
+        if (rank[x] > rank[y])
+            swap(x, y);
+        parent[x] = y;
+        rank[y] += rank[x];
+        if (rank[x] == rank[y]) rank[y]++;
+    }
+};
+
+int main()
+{
+    // finding parent of val
+    cout<<dsu.get(val);
+    // merging different sets of values a and b
+    dsu.union_(a,b)
+    return 0;    
+}
