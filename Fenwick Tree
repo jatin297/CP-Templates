@@ -1,0 +1,49 @@
+// Fenwick Tree Template feature,
+
+-> Point update and range query.
+-> Point update and point query.
+-> Range update and range query.
+-> Range update and point query.
+
+struct BIT {
+    int n; vector<int> t;
+    BIT(int n) {
+        this->n = n;
+        this->t.assign(n + 1, 0);
+    }
+    void upd(int i, int val) {
+        if (i <= 0) return;
+        for (; i <= n; i += (i & -i)) t[i] += val;
+    }
+    void upd(int l, int r, int val) {
+        upd(l, val);
+        upd(r + 1, -val);
+    }
+    int query(int i) {
+        int ans = 0;
+        for (; i >= 1; i -= (i & -i)) ans += t[i];
+        return ans;
+    }
+    int query(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+};
+
+To activate 
+int main{
+  int n;
+  BIT fnw(n);
+  
+  to range update l...r with val
+  fnw.upd(l,r,val)
+  
+  to range query l...r
+  cout<<fnw.query(l,r)
+  
+  to point update i with val
+  fnw.upd(i,val)
+  
+  to point query i 
+  cout<<fnw.query(i)
+  
+}
