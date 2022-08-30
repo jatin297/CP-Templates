@@ -1,1 +1,1 @@
-# Dual-Heap
+# It has templates used in competitive programming.
