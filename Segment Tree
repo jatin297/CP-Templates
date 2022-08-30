@@ -1,0 +1,98 @@
+Segment Tree Template that feature,
+-> Range Updates and Range Query.
+-> Range Updates and point Query.
+-> Point Updates and Range Query.
+-> Point Updates and Point Query.
+
+
+struct segTree {
+    vector<int> segtree, a, lazy;
+    segTree(int n, std::vector<int> &a)
+    {
+        segtree.assign(4 * n, 0);
+        lazy.assign(4 * n, 0);
+        this->a = a;
+        build(0, 0, n - 1);
+    }
+    void build(int node, int low, int high)
+    {
+        if (low == high)
+        {
+            segtree[node] = a[low];
+            return;
+        }
+        int mid = (low + high) / 2;
+        build(2 * node + 1, low, mid);
+        build(2 * node + 2, mid + 1, high);
+        segtree[node] = segtree[2 * node + 1] + segtree[2 * node + 2];
+    }
+    void pointupdate(int node, int low, int high, int ind, int val)
+    {
+        if (high == low)
+        {
+            segtree[node] = val;
+        }
+        else
+        {
+            int mid = (low + high) / 2;
+            if (ind <= mid) pointupdate(2 * node + 1, low, mid, ind, val);
+            else pointupdate(2 * node + 2, mid + 1, high, ind, val);
+            segtree[node] = segtree[2 * node + 1] + segtree[2 * node + 2];
+        }
+    }
+    int rangeQuery(int node, int low, int high, int l, int r)
+    {
+        if (lazy[node] != 0)
+        {
+            segtree[node] += lazy[node] * (high - low + 1);
+            if (low != high)
+            {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+        if (low > r || high < l) return 0;
+        if (l <= low && high <= r) return segtree[node];
+        int mid = (low + high) / 2;
+        return rangeQuery(2 * node + 1, low, mid, l, r) + rangeQuery(2 * node + 2, mid + 1, high, l, r);
+    }
+    void rangeUpdate(int node, int low, int high, int l, int r, int val)
+    {
+        if (lazy[node] != 0)
+        {
+            segtree[node] += lazy[node] * (high - low + 1);
+            if (low != high)
+            {
+                lazy[2 * node + 1] += lazy[node];
+                lazy[2 * node + 2] += lazy[node];
+            }
+            lazy[node] = 0;
+        }
+        if (low > r || high < l || low > high) return;
+        if (l <= low && high <= r)
+        {
+            segtree[node] += val * (high - low + 1);
+            if (low != high)
+            {
+                lazy[2 * node + 1] += val;
+                lazy[2 * node + 2] += val;
+            }
+            lazy[node] = 0;
+            return;
+        }
+        int mid = (low + high) / 2;
+        rangeUpdate(2 * node + 1, low, mid, l, r, val);
+        rangeUpdate(2 * node + 2, mid + 1, high, l, r, val);
+        segtree[node] += segtree[2 * node + 1] + segtree[2 * node + 2];
+    }
+};
+
+// To activate the template
+int main()
+{
+  int n;
+  vector<int> a;
+  segTree st(n,a);
+}
+
